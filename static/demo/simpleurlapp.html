@@ -4,7 +4,7 @@
     
     <script>
       window.addEventListener("load", function() {
-        window.channel.initialize();
+        window.channel.initialize(function() {});
       
         var urls = document.getElementById("urls");
         var go = document.getElementById("go");

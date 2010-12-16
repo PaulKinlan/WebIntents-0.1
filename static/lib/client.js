@@ -26,12 +26,6 @@ var channel = new (function() {
     var data = JSON.parse(event.data);
     var eventOrigin = event.source;
     
-    
-    /* // Todo ensure that the origin is only webintents
-    if(eventOrigin != origin) {
-      return;
-    }*/
-    
     // Direct the data to the correct callback
     callbacks[data.method](data);
   };

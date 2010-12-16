@@ -5,7 +5,7 @@
 */
 window.channel = new (function() {
   var self = this;
-  //self.worker = new SharedWorker("/lib/worker.js", "browsers");
+  self.worker = new SharedWorker("/lib/worker.js", "browsers");
   this.services = {};
   this.apis = {};
   this.subscriptions = {};
@@ -20,7 +20,10 @@ window.channel = new (function() {
     this.apis["publish"] = this.publish;
     this.apis["subscribe"] = this.subscribe;
     
-    window.addEventListener("message", this.processMessage);
+    
+    this.worker.port.addEventListener("message", this.processMessage, false);
+    this.worker.port.start();
+    window.addEventListener("message", this.processMessage, false);
   };
   
   /*
