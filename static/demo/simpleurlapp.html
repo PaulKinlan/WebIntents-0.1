@@ -13,14 +13,18 @@
           window.channel.discover("SHORTEN", {}, function(data) {
             // handle the list of intents that can handle this, if we know it 
             // already then we can just use that one.
-            
             var intents = data.intents;
             for(var intent in intents) {
               var d = document.createElement("div");
               d.innerText = data.intents[intent].data.name
+              d.addEventListener("click", function() {
+                
+              });
               intentContainer.appendChild(d);
             }
           });
+          
+          
         });
         
       });
@@ -34,7 +38,7 @@
     <input type="button" id="go" value="Go">
       
     <div id="intents">
-      
+      <div>Select a service to use</div>
       
     </div>
     

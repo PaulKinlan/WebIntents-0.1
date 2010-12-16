@@ -7,15 +7,19 @@ var channel = new (function() {
   /*
     Initializes the framework
   */
-  this.initialize = function() {
+  this.initialize = function(callback) {
     // create an iframe to the source of this application
     iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.src = origin;
+    iframe.addEventListener("load", function() {
+      // Handle all the messages directed to this app.
+      window.addEventListener("message", processMessage);
+      callback()
+    });
     window.document.body.appendChild(iframe);
     
-    // Handle all the messages directed to this app.
-    window.addEventListener("message", processMessage);
+    
   };
   
   var processMessage = function (event) {
