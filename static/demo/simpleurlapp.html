@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script src="/lib/client.js"></script>
+    
+    <script>
+      window.addEventListener("load", function() {
+        window.channel.initialize();
+      
+        var urls = document.getElementById("urls");
+        var go = document.getElementById("go");
+        var intentContainer = document.getElementById("intents");
+        go.addEventListener("click", function() {
+          window.channel.discover("SHORTEN", {}, function(data) {
+            // handle the list of intents that can handle this, if we know it 
+            // already then we can just use that one.
+            
+            var intents = data.intents;
+            for(var intent in intents) {
+              var d = document.createElement("div");
+              d.innerText = data.intents[intent].data.name
+              intentContainer.appendChild(d);
+            }
+          });
+        });
+        
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Reference Application - Uses a URL Shortener</h1>
+    <p>This is a reference application for an app that will use a registered  URL shortener.</p>
+    
+    <input type="urls" placeholder="Enter your URL" id="urls" />
+    <input type="button" id="go" value="Go">
+      
+    <div id="intents">
+      
+      
+    </div>
+    
+  </body>
+</html>

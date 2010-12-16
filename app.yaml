@@ -1,0 +1,12 @@
+application: webintents
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /
+  upload: static/index.html
+  static_files: static/index.html
+- url: /(.*)
+  upload: static/(.*)
+  static_files: static/\1

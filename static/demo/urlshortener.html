@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <script src="/lib/client.js"></script>
+    
+    <script>
+      window.addEventListener("load", function() {
+        window.channel.initialize();
+        
+        var data = {
+          "name" : "Easy Shorten - URL Shortener"
+        };
+        
+        // Register that we are providing an intent.
+        window.channel.registerIntent("SHORTEN", data, function(message) {
+          // This handler will recieve all messages and process them.
+            
+          
+        });  
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Reference Application - URL Shortener</h1>
+    <p>This is a reference application for a URL shortener that wants to 
+      provide its services to other apps.</p>
+    
+    <h2>Messages Received</h2>
+    <p>A simple list of all the messages that this app has recieved.</p>
+    <div id="messages">
+      
+      
+      
+    </div>
+    
+  </body>
+</html>

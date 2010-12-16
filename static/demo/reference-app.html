@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <script src="/lib/client.js"></script>
+    
+    <script>
+      window.addEventListener("DOMContentLoaded", function() {
+        window.channel.initialize();
+        
+        var regPubSubButton = document.getElementById("registerPubSub");
+        var regPubButton = document.getElementById("registerPub");
+        var messages = document.getElementById("messages");
+        
+        // Registers a channel that allows the app to send and receive messages.
+        regPubSubButton.addEventListener("click", function() {
+          window.channel.register("pubsubMethod", function(e) {
+            var element = document.createElement("li");
+            element.textContent = message;
+            messages.appendChild(element)
+          });
+        });
+        
+        // Registers a channel that only allows the app to send messages.
+        regPubButton.addEventListener("click", function() {
+          var channel = window.channel.register("purchase");
+          
+          // Set an interval to start sending messages every 5 seconds
+          setInterval(function() {
+            window.channel.publish("purchase", {"name" : "Test Message"})
+          }, 5000);
+        });
+        
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Reference Application</h1>
+    <p>This is a reference application for the browser based pubsub channel</p>
+    <p>The application can register a set of handlers that it wants to allow to be open to applications to be able to call</p>
+    
+    <h2>Register</h2>
+    <p>Make this application able to send messages.</p>
+    <button id="registerPubSub">Register PubSub</button>
+    <button id="registerPub">Register Pub</button>
+    
+    <h2>Pub Messages</h2>
+    <p>Send a message to everyone who listens</p>
+    <button id="sendPub">Send a Message</button>
+    
+    <h2>Pub Sub Messages</h2>
+    <p>A list of all the messages received from external apps</p>
+    <ul id="messages">
+      
+    </ul>
+  </body>
+</html>

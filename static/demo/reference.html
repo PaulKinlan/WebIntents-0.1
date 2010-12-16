@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <script src="/lib/client.js"></script>
+    
+    <script>
+      window.addEventListener("load", function() {
+        window.channel.initialize();
+        
+        var subButton = document.getElementById("subscribe");
+        
+        subButton.addEventListener("click", function() {
+          // I know where the url is.
+          var method = window.location.origin + "/reference-app.html#purchase";
+          window.channel.subscribe(method, function(message) {
+            
+          });
+        });
+        
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Reference Application</h1>
+    <p>This is a reference application for the browser based pubsub channel</p>
+    
+    <h2>Subscribe</h2>
+    <p>Subscribe to an applications messages</p>
+    <button id="subscribe">Subscribe</button>
+    
+  </body>
+</html>
