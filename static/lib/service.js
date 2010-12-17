@@ -4,11 +4,6 @@
 
 */
 
-/*var w = new SharedWorker("w.js");
-w.port.onmessage = function(e) { // note: not worker.onmessage!
-  alert(e.data);
-}*/
-
 window.channel = new (function() {
   var self = this;
   var sourceWindow = null; // There can only actually be one source window for
