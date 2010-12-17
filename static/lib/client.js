@@ -1,5 +1,5 @@
 var channel = new (function() {
-  var origin = "http://localhost:8113/host.html"; // << Need to sort out a better way
+  var origin = "http://webintents.appspot.com/host.html"; // << Need to sort out a better way
   var w;
   var iframe;
   var callbacks = {};
