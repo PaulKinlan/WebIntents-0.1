@@ -91,7 +91,7 @@ window.channel = new (function() {
     handlers[channel] = data;
     localStorage[method] = JSON.stringify(handlers);
     // Register the port with the Worker
-    this.worker.port.postMessage(data);
+    self.worker.port.postMessage(data);
   };
   
   
@@ -117,7 +117,7 @@ window.channel = new (function() {
   
   */
   this.publish = function(source, data) {
-    this.worker.port.sendMessage(data);
+    self.worker.port.postMessage(data);
   };
   
   this.postMessage = function(source, data) {

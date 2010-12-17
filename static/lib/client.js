@@ -23,8 +23,14 @@ var channel = new (function() {
     var data = event.data;
     var eventOrigin = event.source;
     
+    // The response function is used to send data back to the client.
+    // In this case the iframe.  The iframe will route the message back.
+    var response = function(data) {
+      eventOrigin.postMessage(data);
+    };
+    
     // Direct the data to the correct callback
-    callbacks[data.method](data);
+    callbacks[data.method](data, response);
   };
   
   /*

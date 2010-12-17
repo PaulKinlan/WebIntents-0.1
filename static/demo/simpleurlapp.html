@@ -6,7 +6,6 @@
       
       window.addEventListener("load", function() {
         window.channel.initialize(function() {});
-        var channel = null;
         var urls = document.getElementById("urls");
         var go = document.getElementById("go");
         var intentContainer = document.getElementById("intents");
@@ -17,10 +16,21 @@
             var intents = data.intents;
             for(var intent in intents) {
               var d = document.createElement("div");
-              d.innerText = data.intents[intent].data.name
+              d.innerText = data.intents[intent].data.name;
+              d.channel = data.intents[intent].channel;
               d.addEventListener("click", function(e) {
-                e.target.attributes["service"]
+                var channel = d.channel;
+                // send the message.
+                var url = go.value;
+                
+                // We know the app that we want to send the message to.
+                window.channel.publish(
+                  "SHORTEN",
+                  {
+                    "data" : url
+                  });
               });
+              
               intentContainer.appendChild(d);
             }
           });
