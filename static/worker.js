@@ -1,12 +1,21 @@
 var num_clients = 0;
-var ports = [];
+var ports = {};
 
 onconnect = function(e) {
   var port = e.ports[0];
-  ports.push(port);
   port.onmessage = function(evt) {
     // Route the message to the correct handler.
-    port.postMessage(evt.data);
+    var url = evt.data.channel + "#" + evt.data.method;
+    if(evt.data.type == "register") {
+      // The app is registering itself
+      ports[url] = port;
+    }
+    else {
+      // Send a message to the app.
+      ports[url].postMessage(evt.data);
+    }
+    
+    
   };
 }
 

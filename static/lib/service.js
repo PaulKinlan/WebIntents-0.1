@@ -34,6 +34,7 @@ window.channel = new (function() {
     
     this.worker.port.addEventListener("message", this.processMessage, false);
     this.worker.port.start();
+    
     window.addEventListener("message", this.processMessage, false);
   };
   
@@ -65,14 +66,7 @@ window.channel = new (function() {
     The third party application wants to subcribe to a feed.
   */
   this.subscribe = function(source, data) {
-    var service = data.type;
-    
-    if(self.services[service]) {
-      self.subscriptions[service].push({ 
-        "service" : service,
-        "handler" : source
-      });
-    }
+    return;
   };
   
   /*
@@ -96,6 +90,8 @@ window.channel = new (function() {
     // spoof
     handlers[channel] = data;
     localStorage[method] = JSON.stringify(handlers);
+    // Register the port with the Worker
+    this.worker.port.postMessage(data);
   };
   
   

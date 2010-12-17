@@ -117,7 +117,5 @@ var channel = new (function() {
      callbacks[method] = callback;
      // Set up the method that is called when the application recieves messages.
      iframe.contentWindow.postMessage(message, "*");
-     
-     
    };
 })();
