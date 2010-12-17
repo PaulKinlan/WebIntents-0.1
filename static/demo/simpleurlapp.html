@@ -29,6 +29,9 @@
                   method,
                   {
                     "data" : url
+                  }, 
+                  function(data) {
+                    // This is the response from the app that we sent a message to
                   });
               });
               
@@ -51,9 +54,14 @@
     <input type="urls" placeholder="Enter your URL" id="urls" />
     <input type="button" id="go" value="Go">
       
+    <div>Select a service to use (it only works if you click on a service):</div>
     <div id="intents">
-      <div>Select a service to use</div>
-      
+
+    </div>
+    
+    <h3>Results</h3>
+    <p>Results will appear here.</p>
+    <div id="results">
     </div>
     
   </body>
