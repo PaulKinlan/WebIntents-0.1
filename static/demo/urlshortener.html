@@ -15,7 +15,7 @@
     </div>
   </body>
   <script>
-  
+    var messages = document.getElementById("messages");
     window.channel.initialize(
       function() {
         var data = {
@@ -24,7 +24,12 @@
         // Register that we are providing an intent.
         window.channel.registerIntent("SHORTEN", data, function(message) {
           // This handler will recieve all messages and process them.
-        
+          var el = document.createElement("div");
+          el.textContent = message.data;
+          messages.appendChild(el);
+          
+          // Return some dummy data.
+          
         });
       });
 
