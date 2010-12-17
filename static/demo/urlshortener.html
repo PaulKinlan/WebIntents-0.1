@@ -25,12 +25,18 @@
         window.channel.registerIntent("SHORTEN", data, function(message, response) {
           // This handler will recieve all messages and process them.
           var el = document.createElement("div");
-          el.textContent = message.data.data;
+          var text = message.data.data;
+          el.textContent = text;
           messages.appendChild(el);
+          
+          // FAKE shorten the URL
+          var reverse = text.split("").reverse().join("");
           
           // Return some dummy data back to the client app
           if(response) {
-            response(message.data);
+            response({
+              "data" : reverse
+            });
           }
         });
       });

@@ -46,7 +46,6 @@ window.channel = new (function() {
   this.processMessage = function(event) {
     
     console.log(event.data);
-    debugger;
     
     var data = event.data;
     
