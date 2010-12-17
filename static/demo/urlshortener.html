@@ -25,7 +25,7 @@
         window.channel.registerIntent("SHORTEN", data, function(message, response) {
           // This handler will recieve all messages and process them.
           var el = document.createElement("div");
-          el.textContent = message.data;
+          el.textContent = message.data.data;
           messages.appendChild(el);
           
           // Return some dummy data.
@@ -34,9 +34,5 @@
           }
         });
       });
-
-   
-      
-    
   </script>
 </html>

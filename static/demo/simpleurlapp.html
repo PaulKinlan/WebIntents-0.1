@@ -12,23 +12,21 @@
         go.addEventListener("click", function() {
           window.channel.discover("SHORTEN", {}, function(data) {
             
-
-            
             // handle the list of intents that can handle this, if we know it 
             // already then we can just use that one.
             var intents = data.intents;
             for(var intent in intents) {
               var d = document.createElement("div");
               d.innerText = data.intents[intent].data.name;
-              d.channel = data.intents[intent].channel;
+              d.method = data.intents[intent].method;
               d.addEventListener("click", function(e) {
-                var channel = d.channel;
+                var method = d.method;
                 // send the message.
                 var url = urls.value;
                 
                 // We know the app that we want to send the message to so do it
                 window.channel.send(
-                  channel,
+                  method,
                   {
                     "data" : url
                   });

@@ -12,7 +12,7 @@ w.port.onmessage = function(e) { // note: not worker.onmessage!
 window.channel = new (function() {
   var self = this;
   var sourceWindow = null; // There can only actually be one source window for
-  var handlers = {};
+  var knownhandlers = {};
   
   self.worker = new SharedWorker("worker.js");
   
@@ -46,6 +46,7 @@ window.channel = new (function() {
   this.processMessage = function(event) {
     
     console.log(event.data);
+    debugger;
     
     var data = event.data;
     
@@ -54,13 +55,13 @@ window.channel = new (function() {
     if(self.apis[method]) {
       self.apis[method](source, data);
     }
-    else if(handlers[method]) {
+    else if(knownhandlers[data.method]) {
       // the app knows how to handle this, send it there.
-      sourceWindow.postMessage(data);
+      sourceWindow.postMessage(data, "*");
     }
     else {
       // Send it out on to the Shared worker so it can find where to send it.
-      self.worker.postMessage(data);
+      self.worker.port.postMessage(data);
     }
   };
   
@@ -72,7 +73,7 @@ window.channel = new (function() {
     
     // The first window to register the handler is the source (the return destination)
     sourceWindow = source;
-    
+    var handlers = {};
     // This can't be quick.
     if(!!localStorage[method]) {
       handlers = JSON.parse(localStorage[method]);
@@ -80,10 +81,16 @@ window.channel = new (function() {
     
     // This will overwrite an existing channel - clients shouldn't be able to 
     // spoof
-    handlers[channel] = data;
-    localStorage[method] = JSON.stringify(handlers);
+    
     // Register the port with the Worker
     self.worker.port.postMessage(data);
+    
+    data.method = data.channel;
+    delete data.channel;
+    
+    handlers[data.method] = data;
+    knownhandlers[data.method] = data;
+    localStorage[method] = JSON.stringify(handlers);
   };
   
   

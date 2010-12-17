@@ -30,7 +30,8 @@ var channel = new (function() {
     };
     
     // Direct the data to the correct callback
-    callbacks[data.method](data, response);
+    if(callbacks[data.method])
+      callbacks[data.method](data, response);
   };
   
   /*
@@ -79,7 +80,7 @@ var channel = new (function() {
      };
 
      // Add this call back into a collection of valid callbacks
-     callbacks[window.location.toString() + "#register"] = callback;
+     callbacks[window.location.toString() + "#" + method] = callback;
      // Set up the method that is called when the application recieves messages.
      iframe.contentWindow.postMessage(message, "*");
    };
