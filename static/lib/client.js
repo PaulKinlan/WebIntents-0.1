@@ -37,23 +37,9 @@ var channel = new (function() {
     Publish a message in to the system, any system that is listening for events
     will get notified of the message.
   */
-  this.publish = function(method, data) { 
+  this.send = function(method, data, callback) { 
     var message = {
-      "type" : "publish",
-      "method": window.location.toString() + "#" + method,
-      "data" : data
-    };
-    
-    iframe.contentWindow.postMessage(message, "*");
-  };
-  
-  /*
-    Publish a message in to the system, any system that is listening for events
-    will get notified of the message.
-  */
-  this.send = function(method, data) { 
-    var message = {
-      "method": window.location.toString() + "#" + method,
+      "method": method,
       "data" : data
     };
     
@@ -66,13 +52,13 @@ var channel = new (function() {
   */
   this.discover = function(method, data, callback) {
     var message = {
-      "channel": window.location.toString() + "#discover",
-      "method" : window.location.toString() + "#" + method,
+      "method": window.location.toString() + "#discover",
+      "channel" : window.location.toString() + "#" + method,
       "data" : data
     };
     
     // only one callback per method, should be multiple.
-    callbacks[method] = callback;
+    callbacks[window.location.toString() + "#discover"] = callback;
     
     iframe.contentWindow.postMessage(message, "*");
   };
@@ -87,14 +73,13 @@ var channel = new (function() {
   this.registerIntent = function(method, data, callback) {
      
      var message = {
-       "type" :  "register",
-       "channel" : window.location.toString() + "#register",
-       "method": window.location.toString() + "#" + method,
+       "method" : window.location.toString() + "#register",
+       "channel": window.location.toString() + "#" + method,
        "data" : data
      };
 
      // Add this call back into a collection of valid callbacks
-     callbacks[method] = callback;
+     callbacks[window.location.toString() + "#register"] = callback;
      // Set up the method that is called when the application recieves messages.
      iframe.contentWindow.postMessage(message, "*");
    };

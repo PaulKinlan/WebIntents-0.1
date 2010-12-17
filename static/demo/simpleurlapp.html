@@ -11,6 +11,9 @@
         var intentContainer = document.getElementById("intents");
         go.addEventListener("click", function() {
           window.channel.discover("SHORTEN", {}, function(data) {
+            
+
+            
             // handle the list of intents that can handle this, if we know it 
             // already then we can just use that one.
             var intents = data.intents;

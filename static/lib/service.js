@@ -11,7 +11,9 @@ w.port.onmessage = function(e) { // note: not worker.onmessage!
 
 window.channel = new (function() {
   var self = this;
-  var sourceWindow = null; // There can only actually be one source window for this iframe.
+  var sourceWindow = null; // There can only actually be one source window for
+  var handlers = {};
+  
   self.worker = new SharedWorker("worker.js");
   
   self.worker.onerror = function(err) { 
@@ -27,10 +29,10 @@ window.channel = new (function() {
     // Register some subscription
     var location = window.location.toString();
     
-    this.apis["register"] = this.register;
-    this.apis["discover"] = this.discover;
-    this.apis["publish"] = this.publish;
-    this.apis["subscribe"] = this.subscribe;
+    this.apis["#register"] = this.register;
+    this.apis["#discover"] = this.discover;
+    this.apis["#publish"] = this.publish;
+    this.apis["#subscribe"] = this.subscribe;
     
     this.worker.port.addEventListener("message", this.processMessage, false);
     this.worker.port.start();
@@ -47,32 +49,29 @@ window.channel = new (function() {
     
     var data = event.data;
     
-    if(!!data.type == false) {
-      return;
-    }
-    
     var source = event.source;
-    var method = data.type;
+    var method = data.method.substr(data.method.indexOf("#"));
     if(self.apis[method]) {
       self.apis[method](source, data);
     }
+    else if(handlers[method]) {
+      // the app knows how to handle this, send it there.
+      sourceWindow.postMessage(data);
+    }
     else {
-      // The message is a response to a call
-      sourceWindow.postMessage(data, "*");
+      // Send it out on to the Shared worker so it can find where to send it.
+      self.worker.postMessage(data);
     }
   };
   
   /*
-    An application registers itself wanting to be able to send messages or register as an intent.
+    An application registers itself as an intent.
   */
   this.register = function(source, data) {
-    var method = data.method;
-    var channel = data.channel;
+    var method = data.channel.substr(data.channel.indexOf("#"));
     
     // The first window to register the handler is the source (the return destination)
     sourceWindow = source;
-    
-    var handlers = {};
     
     // This can't be quick.
     if(!!localStorage[method]) {
@@ -97,8 +96,9 @@ window.channel = new (function() {
   */
   this.discover = function(source, data) {
     // Get a list of apps that can handle the Intent
+    var method = data.channel.substr(data.channel.indexOf("#"));
     
-    data.intents = JSON.parse(localStorage[data.method]);
+    data.intents = JSON.parse(localStorage[method]);
     
     source.postMessage(data, "*"); // Send the message back to the consumer
   };
