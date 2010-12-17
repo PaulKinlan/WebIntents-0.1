@@ -3,9 +3,10 @@
     <script src="/lib/client.js"></script>
     
     <script>
+      
       window.addEventListener("load", function() {
         window.channel.initialize(function() {});
-      
+        var channel = null;
         var urls = document.getElementById("urls");
         var go = document.getElementById("go");
         var intentContainer = document.getElementById("intents");
@@ -17,13 +18,15 @@
             for(var intent in intents) {
               var d = document.createElement("div");
               d.innerText = data.intents[intent].data.name
-              d.addEventListener("click", function() {
-                
+              d.addEventListener("click", function(e) {
+                e.target.attributes["service"]
               });
               intentContainer.appendChild(d);
             }
           });
           
+          // Until a service has been chosen then there is nothing other than 
+          // discovery.
           
         });
         

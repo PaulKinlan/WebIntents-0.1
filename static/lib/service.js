@@ -3,9 +3,21 @@
  between
 
 */
+
+/*var w = new SharedWorker("w.js");
+w.port.onmessage = function(e) { // note: not worker.onmessage!
+  alert(e.data);
+}*/
+
 window.channel = new (function() {
   var self = this;
-  self.worker = new SharedWorker("/lib/worker.js", "browsers");
+  var sourceWindow = null; // There can only actually be one source window for this iframe.
+  self.worker = new SharedWorker("worker.js");
+  
+  self.worker.onerror = function(err) { 
+    console.log(err);
+  }
+  
   this.services = {};
   this.apis = {};
   this.subscriptions = {};
@@ -20,7 +32,6 @@ window.channel = new (function() {
     this.apis["publish"] = this.publish;
     this.apis["subscribe"] = this.subscribe;
     
-    
     this.worker.port.addEventListener("message", this.processMessage, false);
     this.worker.port.start();
     window.addEventListener("message", this.processMessage, false);
@@ -30,16 +41,23 @@ window.channel = new (function() {
     Processes all messages 
   */
   this.processMessage = function(event) {
-    var data = JSON.parse(event.data);
-    var source = event.source;
+    
+    console.log(event.data);
+    
+    var data = event.data;
     
     if(!!data.type == false) {
       return;
     }
     
+    var source = event.source;
     var method = data.type;
     if(self.apis[method]) {
       self.apis[method](source, data);
+    }
+    else {
+      // The message is a response to a call
+      sourceWindow.postMessage(data, "*");
     }
   };
   
@@ -63,7 +81,9 @@ window.channel = new (function() {
   this.register = function(source, data) {
     var method = data.method;
     var channel = data.channel;
-    var sourceWindow = source;
+    
+    // The first window to register the handler is the source (the return destination)
+    sourceWindow = source;
     
     var handlers = {};
     
@@ -91,7 +111,7 @@ window.channel = new (function() {
     
     data.intents = JSON.parse(localStorage[data.method]);
     
-    source.postMessage(JSON.stringify(data), "*"); // Send the message back to the consumer
+    source.postMessage(data, "*"); // Send the message back to the consumer
   };
   
   /*
@@ -101,11 +121,7 @@ window.channel = new (function() {
   
   */
   this.publish = function(source, data) {
-    var method = data.method;
-    var service = self.services[method];
-    var newSource = service.source;
-    
-    service.handler(newSource, data);
+    this.worker.port.sendMessage(data);
   };
   
   this.postMessage = function(source, data) {

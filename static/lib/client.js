@@ -1,6 +1,5 @@
 var channel = new (function() {
-  //http://bpubsub.appspot.com:
-  const origin = "http://localhost:8113/host.html";
+  var origin = "http://localhost:8113/host.html"; // << Need to sort out a better way
   var w;
   var iframe;
   var callbacks = {};
@@ -18,12 +17,10 @@ var channel = new (function() {
       callback()
     });
     window.document.body.appendChild(iframe);
-    
-    
   };
   
   var processMessage = function (event) {
-    var data = JSON.parse(event.data);
+    var data = event.data;
     var eventOrigin = event.source;
     
     // Direct the data to the correct callback
@@ -39,7 +36,7 @@ var channel = new (function() {
       "method" : method
     };
     
-    iframe.contentWindow.postMessage(JSON.stringify(message), origin);
+    iframe.contentWindow.postMessage(message, origin);
     // Whenever a message is recieved, call this callback.
     callbacks[fullMethod] = callback;
   };
@@ -55,7 +52,7 @@ var channel = new (function() {
       "data" : data
     };
     
-    iframe.contentWindow.postMessage(JSON.stringify(message), "*");
+    iframe.contentWindow.postMessage(message, "*");
   };
   
   
@@ -73,7 +70,7 @@ var channel = new (function() {
     // only one callback per method, should be multiple.
     callbacks[method] = callback;
     
-    iframe.contentWindow.postMessage(JSON.stringify(message), "*");
+    iframe.contentWindow.postMessage(message, "*");
   };
   
   /*
@@ -98,7 +95,7 @@ var channel = new (function() {
     };
     
     // Set up the method that is called when the application recieves messages.
-    iframe.contentWindow.postMessage(JSON.stringify(message), origin);
+    iframe.contentWindow.postMessage(message, origin);
   };
   
   /*
@@ -116,7 +113,11 @@ var channel = new (function() {
        "data" : data
      };
 
+     // Add this call back into a collection of valid callbacks
+     callbacks[method] = callback;
      // Set up the method that is called when the application recieves messages.
-     iframe.contentWindow.postMessage(JSON.stringify(message), "*");
+     iframe.contentWindow.postMessage(message, "*");
+     
+     
    };
 })();
