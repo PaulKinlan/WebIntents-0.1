@@ -63,13 +63,6 @@ window.channel = new (function() {
   };
   
   /*
-    The third party application wants to subcribe to a feed.
-  */
-  this.subscribe = function(source, data) {
-    return;
-  };
-  
-  /*
     An application registers itself wanting to be able to send messages or register as an intent.
   */
   this.register = function(source, data) {

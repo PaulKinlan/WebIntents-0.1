@@ -21,11 +21,11 @@
               d.addEventListener("click", function(e) {
                 var channel = d.channel;
                 // send the message.
-                var url = go.value;
+                var url = urls.value;
                 
-                // We know the app that we want to send the message to.
-                window.channel.publish(
-                  "SHORTEN",
+                // We know the app that we want to send the message to so do it
+                window.channel.send(
+                  channel,
                   {
                     "data" : url
                   });

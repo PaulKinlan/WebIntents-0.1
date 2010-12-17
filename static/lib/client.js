@@ -34,27 +34,26 @@ var channel = new (function() {
   };
   
   /*
-    Subscribes to a message source.
-  */
-  this.subscribe = function(method, callback) {
-    var message = {
-      "type" : "subscribe",
-      "method" : method
-    };
-    
-    iframe.contentWindow.postMessage(message, origin);
-    // Whenever a message is recieved, call this callback.
-    callbacks[fullMethod] = callback;
-  };
-  
-  /*
     Publish a message in to the system, any system that is listening for events
     will get notified of the message.
   */
   this.publish = function(method, data) { 
     var message = {
       "type" : "publish",
-      "method": window.location.toString() + method,
+      "method": window.location.toString() + "#" + method,
+      "data" : data
+    };
+    
+    iframe.contentWindow.postMessage(message, "*");
+  };
+  
+  /*
+    Publish a message in to the system, any system that is listening for events
+    will get notified of the message.
+  */
+  this.send = function(method, data) { 
+    var message = {
+      "method": window.location.toString() + "#" + method,
       "data" : data
     };
     
@@ -67,9 +66,8 @@ var channel = new (function() {
   */
   this.discover = function(method, data, callback) {
     var message = {
-      "type" : "discover",
       "channel": window.location.toString() + "#discover",
-      "method" : method,
+      "method" : window.location.toString() + "#" + method,
       "data" : data
     };
     
@@ -79,30 +77,6 @@ var channel = new (function() {
     iframe.contentWindow.postMessage(message, "*");
   };
   
-  /*
-    Register a channel with the system.
-    
-    A channel allows apps to pump messages to any app that will listen.
-    
-    The channel can be bi-directional, so that apps can respond to the messages
-    
-  */
-  this.registerChannel = function(method, callback) {
-    var channel = "pub";
-    
-    if(callback) {
-      channel = "pubsub"
-    }
-    
-    var message = {
-      "type" :  "register",
-      "channel" : channel,
-      "method": method
-    };
-    
-    // Set up the method that is called when the application recieves messages.
-    iframe.contentWindow.postMessage(message, origin);
-  };
   
   /*
     Registers an intent with the system.
@@ -114,8 +88,8 @@ var channel = new (function() {
      
      var message = {
        "type" :  "register",
-       "channel" : window.location.origin,
-       "method": method,
+       "channel" : window.location.toString() + "#register",
+       "method": window.location.toString() + "#" + method,
        "data" : data
      };
 
