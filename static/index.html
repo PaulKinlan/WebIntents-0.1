@@ -5,7 +5,111 @@
   <body>
     <h1>Web Intents</h1>
     <p>Inter-app communication</p>
+    <h2>Problem</h2>
+    <p>
+      On the web today applications have a two methods that they can use to
+      talk to each other. They can use:
+    </p>
+    <ul>
+      <li>Server to Server communication</li>
+      <li>and Cross document messaging</li>
+    </ul>
+    <p>
+      The web has some awesome services built using these technologies, however
+      they have a severe limitation: both apps need to know about each other.
+      Contracts have to be arranged and services written.
+    </p>
+    <h2>Solution</h2>
+    <p>
+      This.
+    </p>
+    <p>
+      A framework that allows developers to register their API's for simple 
+      discovery and ease of interaction.
+    </p>
+    <p>
+      A system that allows developers to discover APIs and quickly integrate
+      with them.
+    </p>
+    <p>
+      An ingenious solution that aides cross-document messaging in a safe and 
+      secure manner
+    </p>
+    <p>
+      Most Importantly, a system that allows <em>the user</em> to control the
+      services that their applications interact with.
+    </p>
+    <h2>A bit more info</h2>
+    <p>It's like Androids Intents, but for the Web.</p>
+    <h2>The 20 second guide for Developers</h2>
+    <h3>For Service Builders</h3>
+    <p>You have a service that you want other developers to use.</p>
+    <p>Add a script tag: <code>
+      &lt;script src="http://webintents.appspot.com/lib/client.js"&gt;&lt;/script&gt;
+    </code>
+    </p>
+    <p>Initialize your service:
+      
+      <pre><code>window.channel.initialize(
+  function() {
+    // Some basic meta-data about your service.
+    var data = {
+      "name" : "Easy Shorten - URL Shortener"
+    };
     
+    // Register that we are providing an intent.
+    window.channel.registerIntent(
+      "shorten", 
+      data, 
+      handleMessage // Your function
+    });
+  });</code></pre>
+    </p>
+    <p>Add your handler for incoming messages: 
+      <pre><code>var handleMessage = function(message, response) {
+  // process in-coming messages.
+  ...
+  // If you want to return some data, you can
+  if(response) {
+    response({
+      "data" : somedata
+    });
+  }
+}</code></pre></p>
+    <h3>For Service Integrators</h3>
+    <p>You have a site that uses other developers services.</p>
+    <p>Add a script tag: <code>
+      &lt;script src="http://webintents.appspot.com/lib/client.js"&gt;&lt;/script&gt;
+    </code></p>
+    <p>
+      Initialize the communication channel:
+      <pre><code>window.channel.initialize(function() {});</code></pre>
+    </p>
+    <p>
+      Query the system for the type of service you want to use:
+      <pre><code>window.channel.discover("shorten", {}, function(data) {
+  // handle the list of intents that can handle this.
+  var intents = data.intents;
+  for(var intent in intents) {
+    // Show the user a list of services they can use.
+  }
+}); </code></pre>
+    </p>
+    <p>
+      Send the application some data:
+      <pre><code>window.channel.send(
+  method,
+  {
+    "data" : anObject
+  }, 
+  function(data) {
+    // This is the response from the app that we sent a message too.
+    ...
+    // Not all apps will return data.
+  });</code></pre>
+    </p>
+    <h2>How does it work?</h2>
+    <p>A little bit of magic.</p>
     <h2>Reference Applications</h2>
     <p>A collection of reference applications to show you how to implement your solution</p>
     

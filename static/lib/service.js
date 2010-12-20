@@ -1,7 +1,6 @@
 /*
  The service resides on the remote host and orchastrates the communication
- between
-
+ between iframes and client applications.
 */
 
 window.channel = new (function() {
@@ -39,15 +38,13 @@ window.channel = new (function() {
     Processes all messages 
   */
   this.processMessage = function(event) {
-    
-    console.log(event.data);
-    
     var data = event.data;
     
     var source = event.source;
     var method = data.method.substr(data.method.indexOf("#"));
     if(self.apis[method]) {
-      self.apis[method](source, data);
+      // This packet, contains the data to send, so send that.
+      self.apis[method](source, data.data);
     }
     else if(knownhandlers[data.method]) {
       // the app knows how to handle this, send it there.
@@ -63,12 +60,12 @@ window.channel = new (function() {
     An application registers itself as an intent.
   */
   this.register = function(source, data) {
-    var method = data.channel.substr(data.channel.indexOf("#"));
+    var method = data.method.substr(data.method.indexOf("#"));
     
     // The first window to register the handler is the source (the return destination)
     sourceWindow = source;
     var handlers = {};
-    // This can't be quick.
+    // This can't be quick.  and it will be racey.. TODO: refactor
     if(!!localStorage[method]) {
       handlers = JSON.parse(localStorage[method]);
     }
@@ -79,11 +76,8 @@ window.channel = new (function() {
     // Register the port with the Worker
     self.worker.port.postMessage(data);
     
-    data.method = data.channel;
-    delete data.channel;
-    
-    handlers[data.method] = data;
-    knownhandlers[data.method] = data;
+    handlers[data.data.method] = data;
+    knownhandlers[data.data.method] = data;
     localStorage[method] = JSON.stringify(handlers);
   };
   
@@ -97,7 +91,7 @@ window.channel = new (function() {
   */
   this.discover = function(source, data) {
     // Get a list of apps that can handle the Intent
-    var method = data.channel.substr(data.channel.indexOf("#"));
+    var method = data.method.substr(data.method.indexOf("#"));
     
     data.intents = JSON.parse(localStorage[method]);
     

@@ -1,5 +1,8 @@
 var channel = new (function() {
-  var origin = "http://webintents.appspot.com/host.html"; // << Need to sort out a better way
+  //var origin = "://webintents.appspot.com/host.html"; // << Need to sort out a better way -
+  
+  var origin = "//localhost:8113/host.html"; // << Need to sort out a better way -
+  
   var w;
   var iframe;
   var callbacks = {};
@@ -53,12 +56,14 @@ var channel = new (function() {
   */
   this.discover = function(method, data, callback) {
     var message = {
-      "method": window.location.toString() + "#discover",
-      
+      "method": window.location.toString() + "#" + method,
       "data" : data
     };
     
-    
+    var container = {
+      "method" : window.location.toString() + "#discover",
+      "data" : message
+    };
     
     // only one callback per method, should be multiple.
     callbacks[window.location.toString() + "#discover"] = callback;
@@ -74,14 +79,13 @@ var channel = new (function() {
   
   */
   this.registerIntent = function(method, data, callback) {
-     
      var message = {
-       "method" : window.location.toString() + "#register"
+       "method": window.location.toString() + "#" + method,
        "data" : data
      };
-     
+
      var container = {
-       "method" : window.location.toString() + "#" + method,
+       "method" : window.location.toString() + "#register",
        "data" : message
      };
 
