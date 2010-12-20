@@ -14,7 +14,7 @@ var channel = new (function() {
     iframe.addEventListener("load", function() {
       // Handle all the messages directed to this app.
       window.addEventListener("message", processMessage);
-      callback()
+      callback();
     });
     window.document.body.appendChild(iframe);
   };
