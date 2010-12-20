@@ -54,14 +54,16 @@ var channel = new (function() {
   this.discover = function(method, data, callback) {
     var message = {
       "method": window.location.toString() + "#discover",
-      "channel" : window.location.toString() + "#" + method,
+      
       "data" : data
     };
+    
+    
     
     // only one callback per method, should be multiple.
     callbacks[window.location.toString() + "#discover"] = callback;
     
-    iframe.contentWindow.postMessage(message, "*");
+    iframe.contentWindow.postMessage(container, "*");
   };
   
   
@@ -74,9 +76,13 @@ var channel = new (function() {
   this.registerIntent = function(method, data, callback) {
      
      var message = {
-       "method" : window.location.toString() + "#register",
-       "channel": window.location.toString() + "#" + method,
+       "method" : window.location.toString() + "#register"
        "data" : data
+     };
+     
+     var container = {
+       "method" : window.location.toString() + "#" + method,
+       "data" : message
      };
 
      // Add this call back into a collection of valid callbacks

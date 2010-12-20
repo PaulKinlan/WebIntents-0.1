@@ -1,4 +1,3 @@
-var num_clients = 0;
 var ports = {};
 
 onconnect = function(e) {
