@@ -1,18 +1,58 @@
 <html>
   <head>
     <script src="/lib/client.js"></script>
-    
+    <style>
+      body {
+        margin: 0 20% 0 20%;
+      }
+    </style>
   </head>
   <body>
-    <h1>Reference Application - URL Shortener</h1>
-    <p>This is a reference application for a URL shortener that wants to 
+    <h1>Easy Shorten - URL Shortener</h1>
+    <p>This is a hypothetical URL shortener that wants to 
       provide its services to other apps.</p>
+      
+    <h2>Overview</h2>
+    <p>
+      The application receives messages sent from Applications that support
+      the #shorten method. The application can process the message and return
+      it back to the calling applications.
+    </p>
     
     <h2>Messages Received</h2>
-    <p>A simple list of all the messages that this app has recieved.</p>
+    <p>
+      A simple list of all the messages that this app has received and
+      processed.
+    </p>
     <div id="messages">
     
     </div>
+    <h2>Code that makes this work</h2>
+    <pre><code>window.channel.initialize(
+  function() {
+    var data = {
+      "name" : "Easy Shorten - URL Shortener"
+    };
+    // Register that we are providing an intent.
+    window.channel.registerIntent("shorten", data, function(message, response) {
+      // This handler will recieve all messages and process them.
+      // FAKE shorten the URL
+      var reverse = text.split("").reverse().join("");
+      
+      var el = document.createElement("div");
+      var text = message.data.data + "->" + reverse;
+      el.textContent = text;
+      messages.appendChild(el);
+    
+      // Return some dummy data back to the client app
+      if(response) {
+        response({
+          "data" : reverse
+        });
+      }
+    });
+  });</code></pre>
+    
   </body>
   <script>
     var messages = document.getElementById("messages");
@@ -24,13 +64,13 @@
         // Register that we are providing an intent.
         window.channel.registerIntent("shorten", data, function(message, response) {
           // This handler will recieve all messages and process them.
-          var el = document.createElement("div");
-          var text = message.data.data;
-          el.textContent = text;
-          messages.appendChild(el);
-          
           // FAKE shorten the URL
           var reverse = text.split("").reverse().join("");
+            
+          var el = document.createElement("div");
+          var text = message.data.data + "->" + reverse;
+          el.textContent = text;
+          messages.appendChild(el);
           
           // Return some dummy data back to the client app
           if(response) {

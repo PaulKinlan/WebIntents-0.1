@@ -11,7 +11,27 @@
   </head>
   <body>
     <h1>Web Intents</h1>
-    <p>Inter-app communication</p>
+    <p>Inter-app communication.</p>
+    
+    <h2>Sample Applications</h2>
+    <p>
+      A collection of sample applications to show you how what can be done with
+      the Web Intents Framework.
+    </p>
+    
+    <h3>URL Shortener</h3>
+    <p>
+      <a href="/demo/urlshortener.html" target="_blank">Service</a> - The app
+      registers its intention to provide services for the #shorten command.  It 
+      receives messages from external applications and processes them returning
+      them to the calling application.
+    </p> 
+    <p><a href="/demo/simpleurlapp.html" target="_blank">Client</a> - This app
+      is a "Status posting" application, one of the functions it provides is
+      the ability to shorten URL's using 3rd party services, the user has the
+      option to chose one of many shortening services.  Not both app and service
+      don't know about each other.
+    </p>
     <h2>Problem</h2>
     <p>
       On the web today applications have a two methods that they can use to
@@ -117,11 +137,6 @@
     </p>
     <h2>How does it work?</h2>
     <p>A little bit of magic.</p>
-    <h2>Reference Applications</h2>
-    <p>A collection of reference applications to show you how to implement your solution</p>
     
-    <h3>URL Shorterner<h3>
-    <p><a href="/demo/urlshortener.html" target="_blank">Service</a> - Load this to have the app register itself as a URL shortner provider</p> 
-    <p><a href="/demo/simpleurlapp.html" target="_blank">Client</a> - An app that uses URL shorterners.  Uses the Discovery Mechansim.</p> 
   </body>
 </html>
