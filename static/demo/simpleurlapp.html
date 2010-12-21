@@ -1,68 +1,125 @@
 <html>
   <head>
+    <title>Quick Tweet</title>
     <script src="/lib/client.js"></script>
-    
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold' rel='stylesheet' type='text/css'>
     <script>
       
-      window.addEventListener("load", function() {
-        window.channel.initialize(function() {});
-        var urls = document.getElementById("urls");
-        var go = document.getElementById("go");
-        var intentContainer = document.getElementById("intents");
-        go.addEventListener("click", function() {
-          window.channel.discover("SHORTEN", {}, function(data) {
-            
-            // handle the list of intents that can handle this, if we know it 
-            // already then we can just use that one.
-            var intents = data.intents;
-            for(var intent in intents) {
-              var d = document.createElement("div");
-              d.innerText = data.intents[intent].data.name;
-              d.method = data.intents[intent].method;
-              d.addEventListener("click", function(e) {
-                var method = d.method;
-                // send the message.
-                var url = urls.value;
-                
-                // We know the app that we want to send the message to so do it
-                window.channel.send(
-                  method,
-                  {
-                    "data" : url
-                  }, 
-                  function(data) {
-                    // This is the response from the app that we sent a message to
-                  });
-              });
-              
-              intentContainer.appendChild(d);
-            }
-          });
-          
-          // Until a service has been chosen then there is nothing other than 
-          // discovery.
-          
-        });
+      var detectUrls = function(text) {
+        var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi
+        var urls = [];
+        var results;
+        while ((results = regexp.exec(text)) != null) {
+          urls.push(results[0]);
+        }
+        return urls;
+      };
+      
+      var replaceUrl = function(url, newUrl) {
         
+      };
+      
+      window.addEventListener("load", function() {
+        // Initialize the channel
+        window.channel.initialize(onInit);
+        
+        var tweetText = document.getElementById("text");
+        var go = document.getElementById("shorten");
+        var intentsEl = document.getElementById("intents");
+        
+        
+        go.addEventListener("click", function () {
+          // Get the method the user has chosen.
+          var method = intentsEl.options[intentsEl.selectedIndex].value;
+          
+          // find the urls in the text
+          var urls = detectUrls(tweetText.textContent);
+        
+          for(var url in urls) {
+            window.channel.send(
+              method,
+              {
+                "data" : urls[url]
+              }, 
+              function(data) {
+                // This is the response from the app that we sent a message to
+                alert(data.data);
+              });
+          }
+         
+        });
       });
+      
+      /*
+        The channel is ready to start sending messages accross it.
+      */
+      var onInit = function() {    
+        
+        // Discover all the shortners
+        window.channel.discover("shorten", {}, function(data) {
+          var intentsEl = document.getElementById("intents");
+          
+          // handle the list of intents that can handle this, if we know it 
+          // already then we can just use that one.
+          var intents = data.intents;
+          for(var idx in intents) {
+            var intent = intents[idx];
+            var opt = new Option(intent.data.name, intent.method);
+            
+            intentsEl.options.add(opt);
+          }
+        });
+      };      
     </script>
+    <style>
+      
+      #text {
+        border-radius: 3px;
+        border: solid 1px #ccc;
+        padding: 3px;
+        font-family: 'Droid Sans';
+        font-size: 2em;
+        height: 10em;
+        overflow: hidden;
+        background-color: white;
+        -webkit-box-shadow: inset 0px 0px 5px 0 #504738;
+        color: black;
+      }
+      
+      
+      body {
+        background-color: #1F2335;
+        color: white;
+        font-family: 'Droid Sans';
+        margin: 0 20% 0 20%;
+      }
+      
+    </style>
   </head>
   <body>
-    <h1>Reference Application - Uses a URL Shortener</h1>
-    <p>This is a reference application for an app that will use a registered  URL shortener.</p>
+    <h1>Quick Tweet</h1>
+    <p>This is a sample application. (It doesn't actually tweet - although
+      some one could create a "Share" intent.. hint hint)</p>
     
-    <input type="urls" placeholder="Enter your URL" id="urls" />
-    <input type="button" id="go" value="Go">
-      
-    <div>Select a service to use (it only works if you click on a service):</div>
-    <div id="intents">
-
-    </div>
+    <div contenteditable="true" id="text"></div>
+    <label for="intents">URL Shortener: </label><select id="intents"></select>
+    <input type="button" id="shorten" value="Shorten">
     
-    <h3>Results</h3>
-    <p>Results will appear here.</p>
-    <div id="results">
-    </div>
-    
+    <h2>A Quick Overview</h2>
+    <p>
+      This sample application is designed to show you how easy it is to interact
+      with external applications, that have registered for the "shorten" action.
+    </p>
+    <p>
+      The application starts by creating the browser channel, it then attempts 
+      to discover some URL shorterners (or services that offer "shorten").  If 
+      it finds any the list is populated.
+    </p>
+    <p>
+      I have not tried to be too clever, for example the app doesn't 
+      automatically shorten a url it finds, instead, just click the "Shorten
+      URL's" button.  This method will then work with the currently selected 
+      shortener.
+    </p>
   </body>
 </html>

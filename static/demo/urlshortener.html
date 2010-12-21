@@ -22,7 +22,7 @@
           "name" : "Easy Shorten - URL Shortener"
         };
         // Register that we are providing an intent.
-        window.channel.registerIntent("SHORTEN", data, function(message, response) {
+        window.channel.registerIntent("shorten", data, function(message, response) {
           // This handler will recieve all messages and process them.
           var el = document.createElement("div");
           var text = message.data.data;

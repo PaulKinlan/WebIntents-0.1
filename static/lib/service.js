@@ -7,8 +7,9 @@ window.channel = new (function() {
   var self = this;
   var sourceWindow = null; // There can only actually be one source window for
   var knownhandlers = {};
+  var callbacks = {};
   
-  self.worker = new SharedWorker("worker.js");
+  self.worker = new SharedWorker("r.js");
   
   self.worker.onerror = function(err) { 
     console.log(err);
@@ -31,11 +32,11 @@ window.channel = new (function() {
     this.worker.port.addEventListener("message", this.processMessage, false);
     this.worker.port.start();
     
-    window.addEventListener("message", this.processMessage, false);
+    window.addEventListener("message", this.processAppMessages, false);
   };
   
   /*
-    Processes all messages 
+    Processes messags coming from the SharedWorker
   */
   this.processMessage = function(event) {
     var data = event.data;
@@ -43,15 +44,42 @@ window.channel = new (function() {
     var source = event.source;
     var method = data.method.substr(data.method.indexOf("#"));
     if(self.apis[method]) {
-      // This packet, contains the data to send, so send that.
-      self.apis[method](source, data.data);
+      // The message is a special message.
+      self.apis[method](source, data);
     }
-    else if(knownhandlers[data.method]) {
-      // the app knows how to handle this, send it there.
+    else if(callbacks[data.inReplyTo]) {
+      // The message is a reply to a previously sent message so send it there
+      //callbacks[data.inReplyTo](data);
       sourceWindow.postMessage(data, "*");
     }
+    else if(knownhandlers[data.method]) {
+      // the app knows how to handle this, send it there, we should also 
+      // set up a callback.
+      sourceWindow.postMessage(data, "*");
+    }
+  };
+  
+  /*
+    Messages coming from the app are always forwarded to the worker.
+  */
+  this.processAppMessages = function(event) {
+    var data = event.data;
+    var id = data.id;
+    var source = event.source;
+    
+    var method = data.method.substr(data.method.indexOf("#"));
+    
+    if(self.apis[method]) {
+      self.apis[method](source, data);
+    }
     else {
-      // Send it out on to the Shared worker so it can find where to send it.
+      // register a callback endpoint
+      callbacks[data.id] = function(d) {
+        // Send the message to the app.
+        sourceWindow.postMessage(d, "*");
+      };
+      
+      // send the message onwards.
       self.worker.port.postMessage(data);
     }
   };
@@ -60,9 +88,10 @@ window.channel = new (function() {
     An application registers itself as an intent.
   */
   this.register = function(source, data) {
-    var method = data.method.substr(data.method.indexOf("#"));
+    var message = data.data;
+    var mm = message.method;
+    var method = mm.substr(mm.indexOf("#"));
     
-    // The first window to register the handler is the source (the return destination)
     sourceWindow = source;
     var handlers = {};
     // This can't be quick.  and it will be racey.. TODO: refactor
@@ -76,8 +105,8 @@ window.channel = new (function() {
     // Register the port with the Worker
     self.worker.port.postMessage(data);
     
-    handlers[data.data.method] = data;
-    knownhandlers[data.data.method] = data;
+    handlers[method] = message;
+    knownhandlers[mm] = message;
     localStorage[method] = JSON.stringify(handlers);
   };
   
@@ -90,8 +119,13 @@ window.channel = new (function() {
     would it be to keep a directory of these!?!?1!
   */
   this.discover = function(source, data) {
+    var message = data.data;
+    var mm = message.method;
+    
+    sourceWindow = source;
+    
     // Get a list of apps that can handle the Intent
-    var method = data.method.substr(data.method.indexOf("#"));
+    var method = mm.substr(mm.indexOf("#"));
     
     data.intents = JSON.parse(localStorage[method]);
     
@@ -106,14 +140,6 @@ window.channel = new (function() {
   */
   this.publish = function(source, data) {
     self.worker.port.postMessage(data);
-  };
-  
-  this.postMessage = function(source, data) {
-    var method = data.method;
-    var subs = self.subscritpions[source];
-    for(var sub in subs) {
-      subs[sub].handler(source, data);
-    }
   };
   
   this.init();
