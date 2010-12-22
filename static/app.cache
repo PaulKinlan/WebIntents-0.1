@@ -1,0 +1,7 @@
+# Hosts all the files
+# Version 1
+
+/host.html
+/lib/client.js
+/lib/service.js
+/lib/worker.js

@@ -9,7 +9,7 @@ window.channel = new (function() {
   var knownhandlers = {};
   var callbacks = {};
   
-  self.worker = new SharedWorker("r.js");
+  self.worker = new SharedWorker("/lib/worker.js");
   
   self.worker.onerror = function(err) { 
     console.log(err);
