@@ -125,9 +125,22 @@
   </head>
   <body>
     <h1>Quick Tweet</h1>
-    <p>This is a sample application. (It doesn't actually tweet - although
-      some one could create a "Share" intent.. hint hint)</p>
-    
+    <p>
+      This is a sample application.  It doesn't Tweet by itself, rather it uses
+      functionality exposed by a plethora of applications.
+    </p>
+    <ul>
+      <li>
+        Sharing Messages using the #share method provided by 
+        <a href="http://paulkinlan.streamie.org/index.html" target="_blank">
+          Streamie</a>.
+      </li>
+      <li>
+        URL shortening the #shorten method provided by 
+        <a href="/urlshortener.html" target="_blank">The Sample app</a>. 
+        
+      </li>
+    </ul>
     <div contenteditable="true" id="text"></div>
     <label for="intents">URL Shortener: </label><select id="intents"></select>
     <input type="button" id="shorten" value="Shorten">
