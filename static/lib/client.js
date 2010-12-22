@@ -1,5 +1,5 @@
 var channel = new (function() {
-  var origin = "://webintents.appspot.com/host.html"; // << Need to sort out a better way -
+  var origin = "//webintents.appspot.com/host.html"; // << Need to sort out a better way -
   
   //var origin = "//localhost:8113/host.html"; // << Need to sort out a better way -
   
