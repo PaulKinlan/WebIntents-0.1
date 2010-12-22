@@ -25,7 +25,9 @@
         
         var tweetText = document.getElementById("text");
         var go = document.getElementById("shorten");
+        var share = document.getElementById("share");
         var intentsEl = document.getElementById("intents");
+        var shares = document.getElementById("shares");
         
         
         go.addEventListener("click", function () {
@@ -48,7 +50,18 @@
           }
          
         });
+        
+        share.addEventListener("click", function() {
+          var method = shares.options[shares.selectedIndex].value;
+          // Get the text and share it.
+          window.channel.send(
+            method,
+            {
+              "data" : tweetText
+            });
+        });
       });
+      
       
       /*
         The channel is ready to start sending messages accross it.
@@ -66,6 +79,20 @@
             var intent = intents[idx];
             var opt = new Option(intent.data.name, intent.method);
             
+            intentsEl.options.add(opt);
+          }
+        });
+        
+        window.channel.discover("share", {}, function(data) {
+          var intentsEl = document.getElementById("shares");
+
+          // handle the list of intents that can handle this, if we know it 
+          // already then we can just use that one.
+          var intents = data.intents;
+          for(var idx in intents) {
+            var intent = intents[idx];
+            var opt = new Option(intent.data.name, intent.method);
+
             intentsEl.options.add(opt);
           }
         });
@@ -104,7 +131,9 @@
     <div contenteditable="true" id="text"></div>
     <label for="intents">URL Shortener: </label><select id="intents"></select>
     <input type="button" id="shorten" value="Shorten">
-    
+    <br/>
+    <label for="shares">Sharing Services: </label><select id="shares"></select>
+    <input type="button" id="share" value="Share message">
     <h2>A Quick Overview</h2>
     <p>
       This sample application is designed to show you how easy it is to interact
@@ -112,7 +141,7 @@
     </p>
     <p>
       The application starts by creating the browser channel, it then attempts 
-      to discover some URL shorterners (or services that offer "shorten").  If 
+      to discover some URL shorteners (or services that offer "shorten").  If 
       it finds any the list is populated.
     </p>
     <p>
