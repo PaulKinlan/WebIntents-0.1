@@ -57,7 +57,7 @@
           window.channel.send(
             method,
             {
-              "data" : tweetText
+              "data" : tweetText.textContent
             });
         });
       });
@@ -134,6 +134,7 @@
     <br/>
     <label for="shares">Sharing Services: </label><select id="shares"></select>
     <input type="button" id="share" value="Share message">
+    
     <h2>A Quick Overview</h2>
     <p>
       This sample application is designed to show you how easy it is to interact
