@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="author" src="mailto:paulkinlan@google.com">
+    <link rel="author" src="mailto:paulkinlan@google.com" />
     <style>
     
     body {
       margin: 0 10% 0 10%;
     }
-    
     </style>
-
   </head>
   <body>
     <h1>Web Intents</h1>
     <p><em>Paul Kinlan - November 2010</em></p>
-    <p>A framework for Inter-app communication and service discovery.</p>
+    <p>
+      <em>Source:</em>
+      <a href="https://github.com/PaulKinlan/WebIntents"> https://github.com/PaulKinlan/WebIntents</a>
+    </p>
+    <p>A framework for Web-based Inter-app communication and service
+       discovery.</p>
     
     <h2>How does it work?</h2>
     <p>A little bit of magic.</p>
     <p>
       Actually it is pretty simple, there is a shared domain (in this case
-      http://webintents.appspot.com/) that hosts an the messaging channel.
-      Both service and client host an IFRAME pointing to the framework and use 
+      http://webintents.appspot.com/) that hosts the messaging channel.
+      Both service and client host an IFRAME pointing to the framework and uses 
       SharedWorkers to communicate between apps.
     </p>
     
@@ -48,12 +51,12 @@
     </p>
     <h2>Problem</h2>
     <p>
-      On the web today applications have a two methods that they can use to
+      On the web today applications have two methods that they can use to
       talk to each other. They can use:
     </p>
     <ul>
       <li>Server to Server communication</li>
-      <li>and Cross document messaging</li>
+      <li>and Cross document messaging.</li>
     </ul>
     <p>
       The web has some awesome services built using these technologies, however
