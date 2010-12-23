@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <link rel="author" src="mailto:paulkinlan@google.com">
     <style>
     
     body {
@@ -11,7 +13,17 @@
   </head>
   <body>
     <h1>Web Intents</h1>
-    <p>Inter-app communication.</p>
+    <p><em>Paul Kinlan - November 2010</em></p>
+    <p>A framework for Inter-app communication and service discovery.</p>
+    
+    <h2>How does it work?</h2>
+    <p>A little bit of magic.</p>
+    <p>
+      Actually it is pretty simple, there is a shared domain (in this case
+      http://webintents.appspot.com/) that hosts an the messaging channel.
+      Both service and client host an IFRAME pointing to the framework and use 
+      SharedWorkers to communicate between apps.
+    </p>
     
     <h2>Sample Applications</h2>
     <p>
@@ -137,8 +149,18 @@
     // Not all apps will return data.
   });</code></pre>
     </p>
-    <h2>How does it work?</h2>
-    <p>A little bit of magic.</p>
-    
   </body>
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-114468-23']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
 </html>
