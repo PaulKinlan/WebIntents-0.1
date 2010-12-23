@@ -10,7 +10,7 @@ handlers:
 - url: /app.cache
   static_files: static/app.cache
   upload: static/app.cache
-  mime_type: text/cache-manifes
+  mime_type: text/cache-manifest
 - url: /(.*)
   upload: static/(.*)
   static_files: static/\1

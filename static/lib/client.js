@@ -41,9 +41,10 @@ var channel = new (function() {
     
     // Direct the data to the correct callback
     if(callbacks[data.id] || callbacks[data.inReplyTo]) {
+      var dataId = data.inReplyTo || data.id;
       // The callback is a return value (a message id is present).
       // There is no other callback after this.
-      callbacks[data.id](data, null);
+      callbacks[dataId](data, null);
     }
     else if (callbacks[data.method]) {
       // It is a direct call to the client code.
