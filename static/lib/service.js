@@ -126,9 +126,11 @@ window.channel = new (function() {
     
     // Get a list of apps that can handle the Intent
     var method = mm.substr(mm.indexOf("#"));
-    
-    data.intents = JSON.parse(localStorage[method]);
-    
+    data.intents = [];
+    if(localStorage[method]) {  
+      data.intents = JSON.parse(localStorage[method]);
+    }
+  
     source.postMessage(data, "*"); // Send the message back to the consumer
   };
   
