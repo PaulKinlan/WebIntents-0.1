@@ -1,48 +1,62 @@
-Use-cases
+Send File + Share File
 
-Componentisation
-================
-If a user is using TweetDeck.
+** Usecase **
 
-Upload image
-Recored video
-Recored audio
-Shorten Links
-Spell check
-Suggest new Friends
-Location Lookup - delegating
-Location (reverse look up) - i.e, Liverpool, UK
+A user uses a web based email provider.
 
-Flickr
-======
-Share image
-Find user
-Lookup Licence
-Discover Location
-Lookup Popular tags
+A user is manipulating a file in an online image editing application.
 
-Wikipedia
-=========
-Share article
-Share image
-Donate
-Create a Book
-Lookup Dictionary Definition
+Currently, the user has to download the file into a temporary directory and then
+upload it to the email client.
 
-Google Docs
-===========
-Thesaurus
-Spell Checker
-Dictionary
-Grammar Checker
-Share
-Print
+This is a less than optimal experience, even with drag and drop support.
 
-Scrabble
-========
-Submit Scores
-Share score
-Save state
-Find Opponents
-Lookup Dictionary Definition
-Find Anagrams
+registerProtocolHandler Javascript interface is unable to handle this usecase as it can only initiate a "create email" via the "mailto://" handler, and possibly
+have some extra meta data specified.  All this data is specific to the application and the addressee, rather allowing the user to have control.
+
+** Process **
+
+- The Web-based email client (SERVICE) registers its intention to be able to receive requests "Send a file" with the Intents framework (BROKER)
+-- MAY provide a list of supported mime type
+-- MUST provide a protocol SEND
+-- MUST register a method that is involked when called
+
+- The Image application (CLIENT) includes the BROKER framework and provides a custom interface for the ability to SEND images.
+
+- The user wishes to SHARE an image and invokes the UI in the CLIENT that will initiate the share
+
+- The CLIENT asks the BROKER for a list of providers that can handle the SHARE command, for the supported mime type.
+-- The BROKER returns a list of known services including SERVICE
+-- The CLIENT will show a list of services
+
+- The USER selects the service they want to use for the command
+
+- The CLIENT sends a message to the USER selected SERVICE
+-- The message is formatted using the SEND protocol
+
+** The SEND protocol **
+
+The protocol will be named 'http://web-send.org/send/'
+
+It is imperative that consistent protocols are used to send data between applications.  To send a file between applications it must be part of a standardised message format.
+
+Key properties:
+- filename (Content-Disposition?)
+- mime-type
+- length
+- data (base64 encoded? Blob?)
+
+
+- The Service 
+
+** User Interface **
+
+
+
+Usecase 2.
+
+The user of an email provider wants to send an image that is in a known image gallery on the web.  Rather than navigate to the applicaiton and send the file to the email client, the user should be able to ask for a list of applications that support file discovery.  Then once selected, allow the user to pick the file.
+
+Gmail will issue a request to be able to get a list of files from another application
+
+Applications that can
